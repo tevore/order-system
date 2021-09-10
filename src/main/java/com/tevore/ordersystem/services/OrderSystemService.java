@@ -4,6 +4,7 @@ import com.tevore.ordersystem.controllers.request.IncomingOrderRequest;
 import com.tevore.ordersystem.controllers.request.OrderDetail;
 import com.tevore.ordersystem.controllers.response.OrderSummary;
 import com.tevore.ordersystem.controllers.response.OrderSummaryResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -19,6 +20,13 @@ import java.util.stream.Collectors;
 @Service
 public class OrderSystemService {
 
+    private PromotionService promotionService;
+
+    @Autowired
+    public OrderSystemService (PromotionService promotionService) {
+        this.promotionService = promotionService;
+    }
+
     /**
      *
      * Applies additional validations that may not be caught by validation annotations
@@ -32,19 +40,21 @@ public class OrderSystemService {
         List<OrderSummary> orderSummaryList = request.getOrderDetails().stream()
                 .filter(Objects::nonNull)
                 .filter(this::orderValidator)
-                .map(x -> new OrderSummary(x.getName(),
-                        x.getQuantity(),
-                        x.getCost(),
-                        x.getCost().multiply(BigDecimal.valueOf(x.getQuantity()))))
+                .map(order -> new OrderSummary(order.getName(),
+                        order.getQuantity(),
+                        order.getCost(),
+                        promotionService.validateAndApplyPromotion(order.getCost(), order.getQuantity(), order.getPromotion()),
+                        order.getPromotion()))
                 .collect(Collectors.toList());
 
         Optional<BigDecimal> totalOrderCost = orderSummaryList.stream()
                 .filter(Objects::nonNull)
-                .map(x -> x.getTotalCost())
-                .reduce(BigDecimal::add);
+                .map(order -> order.getTotalCost())
+                . reduce(BigDecimal::add);
 
 
-        OrderSummaryResponse orderSummaryResponse = new OrderSummaryResponse(orderSummaryList, totalOrderCost.orElse(BigDecimal.valueOf(0.00).setScale(2)));
+        OrderSummaryResponse orderSummaryResponse = new OrderSummaryResponse(orderSummaryList,
+                totalOrderCost.orElse(BigDecimal.valueOf(0.00).setScale(2)));
 
         return orderSummaryResponse;
 
@@ -56,7 +66,7 @@ public class OrderSystemService {
      * @return result of validations
      */
     //TODO see if there is a nicer method of doing this
-    public boolean orderValidator(OrderDetail orderDetail) {
+    private boolean orderValidator(OrderDetail orderDetail) {
 
         if(orderDetail.getQuantity() < 1) {
             return false;
@@ -70,4 +80,8 @@ public class OrderSystemService {
 
         return true;
     }
+
+
+
+
 }

@@ -25,4 +25,6 @@ public class OrderDetail {
     @NotNull(message = "Cost must not be null")
     @Positive(message = "Cost must be greater than 0")
     private BigDecimal cost;
+
+    private String promotion;
 }

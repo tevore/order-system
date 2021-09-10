@@ -13,4 +13,5 @@ public class OrderSummary {
     private Integer quantity;
     private BigDecimal itemCost;
     private BigDecimal totalCost;
+    private String promotionApplied;
 }

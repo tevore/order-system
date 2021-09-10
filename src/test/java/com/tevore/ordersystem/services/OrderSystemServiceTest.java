@@ -11,12 +11,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class OrderSystemServiceTest {
 
-
     private OrderSystemService orderSystemService;
+    private PromotionService promotionService;
 
     @BeforeEach
     public void setUp() {
-        orderSystemService = new OrderSystemService();
+        promotionService = new PromotionService();
+        orderSystemService = new OrderSystemService(promotionService);
     }
 
     @Test

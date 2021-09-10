@@ -13,8 +13,8 @@ public class RequestGenerator {
 
         IncomingOrderRequest incomingOrderRequest = new IncomingOrderRequest();
 
-        OrderDetail detail1 = new OrderDetail(5, 1, "apple", BigDecimal.valueOf(0.60));
-        OrderDetail detail2 = new OrderDetail(3, 2, "orange", BigDecimal.valueOf(0.25));
+        OrderDetail detail1 = new OrderDetail(5, 1, "apple", BigDecimal.valueOf(0.60), null);
+        OrderDetail detail2 = new OrderDetail(3, 2, "orange", BigDecimal.valueOf(0.25), null);
 
         incomingOrderRequest.setOrderDetails(Arrays.asList(detail1, detail2));
 
@@ -25,9 +25,9 @@ public class RequestGenerator {
 
         IncomingOrderRequest incomingOrderRequest = new IncomingOrderRequest();
 
-        OrderDetail detail1 = new OrderDetail(0, 1, "apple", BigDecimal.valueOf(0.60));
-        OrderDetail detail2 = new OrderDetail(-3, 2, "orange", BigDecimal.valueOf(0.60));
-        OrderDetail detail3 = new OrderDetail(2, 3, "banana", BigDecimal.valueOf(0.75));
+        OrderDetail detail1 = new OrderDetail(0, 1, "apple", BigDecimal.valueOf(0.60), null);
+        OrderDetail detail2 = new OrderDetail(-3, 2, "orange", BigDecimal.valueOf(0.60), null);
+        OrderDetail detail3 = new OrderDetail(2, 3, "banana", BigDecimal.valueOf(0.75), null);
 
         incomingOrderRequest.setOrderDetails(Arrays.asList(detail1, detail2, detail3));
 
@@ -37,8 +37,8 @@ public class RequestGenerator {
     public static IncomingOrderRequest generateIncomingOrderRequestNullItems() {
         IncomingOrderRequest incomingOrderRequest = new IncomingOrderRequest();
 
-        OrderDetail detail1 = new OrderDetail(1, 1, "apple", BigDecimal.valueOf(0.60));
-        OrderDetail detail2 = new OrderDetail(2, 2, "orange", BigDecimal.valueOf(0.25));
+        OrderDetail detail1 = new OrderDetail(1, 1, "apple", BigDecimal.valueOf(0.60), null);
+        OrderDetail detail2 = new OrderDetail(2, 2, "orange", BigDecimal.valueOf(0.25), null);
         incomingOrderRequest.setOrderDetails(Arrays.asList(detail1, null, detail2));
 
         return incomingOrderRequest;
@@ -48,8 +48,8 @@ public class RequestGenerator {
     public static IncomingOrderRequest generateIncomingOrderNoNameNoId() {
         IncomingOrderRequest incomingOrderRequest = new IncomingOrderRequest();
 
-        OrderDetail detail1 = new OrderDetail(1, 1, "", BigDecimal.valueOf(0.60));
-        OrderDetail detail2 = new OrderDetail(2, 0, "orange", BigDecimal.valueOf(0.25));
+        OrderDetail detail1 = new OrderDetail(1, 1, "", BigDecimal.valueOf(0.60), null);
+        OrderDetail detail2 = new OrderDetail(2, 0, "orange", BigDecimal.valueOf(0.25), null);
         incomingOrderRequest.setOrderDetails(Arrays.asList(detail1, detail2));
 
         return incomingOrderRequest;
