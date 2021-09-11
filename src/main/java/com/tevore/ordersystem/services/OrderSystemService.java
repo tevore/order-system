@@ -23,10 +23,12 @@ import java.util.stream.Collectors;
 public class OrderSystemService {
 
     private PromotionService promotionService;
+    private OrderQueryService orderQueryService;
 
     @Autowired
-    public OrderSystemService (PromotionService promotionService) {
+    public OrderSystemService (PromotionService promotionService, OrderQueryService orderQueryService) {
         this.promotionService = promotionService;
+        this.orderQueryService = orderQueryService;
     }
 
     /**
@@ -57,6 +59,8 @@ public class OrderSystemService {
 
         OrderSummaryResponse orderSummaryResponse = new OrderSummaryResponse(orderSummaryList,
                 totalOrderCost.orElse(BigDecimal.valueOf(0.00).setScale(2)));
+
+        orderQueryService.save(orderSummaryResponse);
 
         return orderSummaryResponse;
 
