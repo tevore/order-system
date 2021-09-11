@@ -14,6 +14,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+//TODO bad cases should likely return an IllegalArgumentException to the client ( if it got this far... )
+
 /**
  * Base service for compiling transactions and processing totals for orders received
  */

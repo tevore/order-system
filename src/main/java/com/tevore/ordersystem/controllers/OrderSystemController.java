@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 @RestController
 @Validated
@@ -23,7 +24,7 @@ public class OrderSystemController {
     }
 
     @PostMapping("/orders")
-    public OrderSummaryResponse acceptIncomingOrder(@RequestBody @Valid IncomingOrderRequest request) {
+    public OrderSummaryResponse acceptIncomingOrder(@RequestBody @Valid @NotNull IncomingOrderRequest request) {
         return orderSystemService.processIncomingOrder(request);
     }
 }
