@@ -9,10 +9,13 @@ import com.tevore.ordersystem.models.repositories.OrderRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,15 +37,14 @@ public class OrderQueryService {
         Optional<Order> optOrder = orderRepository.findById(orderId);
         if(optOrder.isPresent()) {
             Order order = optOrder.get();
-            try {
                 return new OrderDetailResponse(order.getId(), order.getCreatedTimestamp(), order.getOrderSummaryJson());
-            } catch (Exception e) {
-                LOGGER.error("Could not properly parse out json");
-                return new OrderDetailResponse(order.getId(), order.getCreatedTimestamp(),
-                       "");
             }
-        }
         throw new EntityNotFoundException("OrderId: " + orderId + " not found!");
+    }
+
+    public Page<Order> getAllOrders(int page, int size) {
+
+        return orderRepository.findAll(PageRequest.of(page, size));
     }
 
     public boolean save(OrderSummaryResponse orderSummaryResponse) {
