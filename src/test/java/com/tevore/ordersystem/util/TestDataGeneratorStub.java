@@ -1,14 +1,20 @@
-package com.tevore.ordersystem;
+package com.tevore.ordersystem.util;
 
 import com.tevore.ordersystem.controllers.request.IncomingOrderRequest;
 import com.tevore.ordersystem.controllers.request.OrderDetail;
-import org.aspectj.weaver.ast.Or;
+import com.tevore.ordersystem.models.Order;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
-public class RequestGeneratorStub {
+public class TestDataGeneratorStub {
 
 
     public static IncomingOrderRequest generateIncomingOrderRequest() {
@@ -85,5 +91,12 @@ public class RequestGeneratorStub {
 
 
         return incomingOrderRequest;
+    }
+
+    public static Order generateOrder() {
+
+        Order order = new Order("123", LocalDateTime.now(), "{\"some_key\":\"some_value\"}");
+        return order;
+
     }
 }

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,12 +33,8 @@ public class OrderQueryService {
 
     public OrderDetailResponse getOrderById(String orderId) {
 
-        Optional<Order> optOrder = orderRepository.findById(orderId);
-        if(optOrder.isPresent()) {
-            Order order = optOrder.get();
-                return new OrderDetailResponse(order.getId(), order.getCreatedTimestamp(), order.getOrderSummaryJson());
-            }
-        throw new EntityNotFoundException("OrderId: " + orderId + " not found!");
+        Order order = orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);
+        return new OrderDetailResponse(order.getId(), order.getCreatedTimestamp(), order.getOrderSummaryJson());
     }
 
     public Page<Order> getAllOrders(int page, int size) {

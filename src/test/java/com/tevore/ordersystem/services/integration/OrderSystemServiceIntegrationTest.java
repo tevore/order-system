@@ -1,9 +1,11 @@
-package com.tevore.ordersystem.services;
+package com.tevore.ordersystem.services.integration;
 
-import com.tevore.ordersystem.RequestGeneratorStub;
+import com.tevore.ordersystem.util.TestDataGeneratorStub;
 import com.tevore.ordersystem.controllers.response.OrderSummaryResponse;
 import com.tevore.ordersystem.models.repositories.OrderRepository;
-import org.junit.jupiter.api.BeforeEach;
+import com.tevore.ordersystem.services.OrderQueryService;
+import com.tevore.ordersystem.services.OrderSystemService;
+import com.tevore.ordersystem.services.PromotionService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,7 +32,7 @@ public class OrderSystemServiceIntegrationTest {
     @Test
     public void shouldProperlyCalculateOrder() {
 
-        OrderSummaryResponse response = orderSystemService.processIncomingOrder(RequestGeneratorStub.generateIncomingOrderRequest());
+        OrderSummaryResponse response = orderSystemService.processIncomingOrder(TestDataGeneratorStub.generateIncomingOrderRequest());
 
         assertEquals(BigDecimal.valueOf(3.75), response.getTotalCost());
     }
@@ -38,7 +40,7 @@ public class OrderSystemServiceIntegrationTest {
     @Test
     public void shouldNotAllowForZeroOrNegativeQuantityInOrder() {
 
-        OrderSummaryResponse response = orderSystemService.processIncomingOrder(RequestGeneratorStub.generateIncomingOrderRequestZeroOrNegativeQuantity());
+        OrderSummaryResponse response = orderSystemService.processIncomingOrder(TestDataGeneratorStub.generateIncomingOrderRequestZeroOrNegativeQuantity());
 
         assertEquals(BigDecimal.valueOf(1.50).setScale(2), response.getTotalCost());
     }
@@ -46,7 +48,7 @@ public class OrderSystemServiceIntegrationTest {
     @Test
     public void shouldNotAllowNullItemToRuinOrder() {
 
-        OrderSummaryResponse response = orderSystemService.processIncomingOrder(RequestGeneratorStub.generateIncomingOrderRequestNullItems());
+        OrderSummaryResponse response = orderSystemService.processIncomingOrder(TestDataGeneratorStub.generateIncomingOrderRequestNullItems());
 
         assertEquals(BigDecimal.valueOf(1.10).setScale(2), response.getTotalCost());
     }
@@ -54,7 +56,7 @@ public class OrderSystemServiceIntegrationTest {
     @Test
     public void shouldNotAllowForBlankNamesOrEmptyIds() {
 
-        OrderSummaryResponse response = orderSystemService.processIncomingOrder(RequestGeneratorStub.generateIncomingOrderNoNameNoId());
+        OrderSummaryResponse response = orderSystemService.processIncomingOrder(TestDataGeneratorStub.generateIncomingOrderNoNameNoId());
 
         assertEquals(BigDecimal.valueOf(0.0).setScale(2), response.getTotalCost());
     }
@@ -62,7 +64,7 @@ public class OrderSystemServiceIntegrationTest {
     @Test
     public void shouldNotAllowForZeroOrNegativeCosts() {
 
-        OrderSummaryResponse response = orderSystemService.processIncomingOrder(RequestGeneratorStub.generateIncomingOrderNegativeOrZeroCost());
+        OrderSummaryResponse response = orderSystemService.processIncomingOrder(TestDataGeneratorStub.generateIncomingOrderNegativeOrZeroCost());
 
         assertEquals(BigDecimal.valueOf(0.0).setScale(2), response.getTotalCost());
     }
