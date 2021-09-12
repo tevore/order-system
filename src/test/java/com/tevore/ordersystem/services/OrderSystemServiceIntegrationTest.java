@@ -2,39 +2,34 @@ package com.tevore.ordersystem.services;
 
 import com.tevore.ordersystem.RequestGeneratorStub;
 import com.tevore.ordersystem.controllers.response.OrderSummaryResponse;
+import com.tevore.ordersystem.models.repositories.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith(MockitoExtension.class)
-public class OrderSystemServiceTest {
+@SpringBootTest
+public class OrderSystemServiceIntegrationTest {
 
+    @Autowired
     private OrderSystemService orderSystemService;
 
-    @Mock
+    @Autowired
     private PromotionService promotionService;
 
-    @Mock
+    @Autowired
     private OrderQueryService orderQueryService;
 
-    @BeforeEach
-    public void setUp() {
-        orderSystemService = new OrderSystemService(promotionService, orderQueryService);
-    }
+    @Autowired
+    private OrderRepository orderRepository;
 
     @Test
     public void shouldProperlyCalculateOrder() {
 
-        when(promotionService.validateAndApplyPromotion(BigDecimal.valueOf(0.60),5,null)).thenReturn(BigDecimal.valueOf(3.00).setScale(2));
-        when(promotionService.validateAndApplyPromotion(BigDecimal.valueOf(0.25),3,null)).thenReturn(BigDecimal.valueOf(0.75).setScale(2));
-        when(orderQueryService.save(any())).thenReturn(true);
         OrderSummaryResponse response = orderSystemService.processIncomingOrder(RequestGeneratorStub.generateIncomingOrderRequest());
 
         assertEquals(BigDecimal.valueOf(3.75), response.getTotalCost());
@@ -43,8 +38,6 @@ public class OrderSystemServiceTest {
     @Test
     public void shouldNotAllowForZeroOrNegativeQuantityInOrder() {
 
-        when(promotionService.validateAndApplyPromotion(any(),any(),any())).thenReturn(BigDecimal.valueOf(1.50).setScale(2));
-        when(orderQueryService.save(any())).thenReturn(true);
         OrderSummaryResponse response = orderSystemService.processIncomingOrder(RequestGeneratorStub.generateIncomingOrderRequestZeroOrNegativeQuantity());
 
         assertEquals(BigDecimal.valueOf(1.50).setScale(2), response.getTotalCost());
@@ -52,9 +45,7 @@ public class OrderSystemServiceTest {
 
     @Test
     public void shouldNotAllowNullItemToRuinOrder() {
-        when(promotionService.validateAndApplyPromotion(BigDecimal.valueOf(0.60),1, null)).thenReturn(BigDecimal.valueOf(0.60).setScale(2));
-        when(promotionService.validateAndApplyPromotion(BigDecimal.valueOf(0.25),2, null)).thenReturn(BigDecimal.valueOf(0.50).setScale(2));
-        when(orderQueryService.save(any())).thenReturn(true);
+
         OrderSummaryResponse response = orderSystemService.processIncomingOrder(RequestGeneratorStub.generateIncomingOrderRequestNullItems());
 
         assertEquals(BigDecimal.valueOf(1.10).setScale(2), response.getTotalCost());
@@ -62,7 +53,7 @@ public class OrderSystemServiceTest {
 
     @Test
     public void shouldNotAllowForBlankNamesOrEmptyIds() {
-        when(orderQueryService.save(any())).thenReturn(true);
+
         OrderSummaryResponse response = orderSystemService.processIncomingOrder(RequestGeneratorStub.generateIncomingOrderNoNameNoId());
 
         assertEquals(BigDecimal.valueOf(0.0).setScale(2), response.getTotalCost());
@@ -70,7 +61,7 @@ public class OrderSystemServiceTest {
 
     @Test
     public void shouldNotAllowForZeroOrNegativeCosts() {
-        when(orderQueryService.save(any())).thenReturn(true);
+
         OrderSummaryResponse response = orderSystemService.processIncomingOrder(RequestGeneratorStub.generateIncomingOrderNegativeOrZeroCost());
 
         assertEquals(BigDecimal.valueOf(0.0).setScale(2), response.getTotalCost());
